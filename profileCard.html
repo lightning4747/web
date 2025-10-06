@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: rgb(47, 47, 47);
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6; 
+        }
+        #container {
+            text-align: center;
+            border:2px solid yellow;   
+            box-shadow: 1px 1px 10px 1px yellow;
+            margin-left: auto;
+            margin-right: auto;
+            width: 470px;
+            height: 400px;
+            margin-top: 150px;
+            
+        }
+        .anime {
+            background-color: rgb(90, 102, 148);
+            border-bottom:2px solid white ;
+            margin-bottom: 30px;
+        }
+        .series:hover {
+            margin-top: 200px;
+            background-color: aqua;
+            border: 2px solid red;
+        }
+        #code {
+            width: 430px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 30px;
+            background-color: rgb(84, 84, 84);
+            border-radius: 15px;
+            text-align: justify;
+            padding: 10px ;
+        }
+    </style>
+</head>
+<body>
+      <div id = "container">
+          <h1 class = "anime">Java</h1>
+          <h3 class = "series">Write once, run everywhere with absoulte errors due to package management</h3>
+          
+          <pre id = "code">
+            class Main {
+                public static void main(String[] args) {
+                    System.out.print("Hello world");
+                }
+            }
+          </pre>
+        </div>
+    
+
+</body>
+</html> 

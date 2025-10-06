@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+        body {
+            background-color: rgb(78, 78, 78);
+            color: white;
+            font-family:'Courier New', Courier, monospace;
+            
+        }
+        #gradient {
+            border: 2px solid white;
+            width: 350px;
+            height: 150px;
+            background: linear-gradient(to right, blue,red);
+            margin-top: 15px;
+            margin-left: 40px;
+        }
+        .head {
+           border-left: 2px solid white; 
+           padding-left: 20px;
+           margin-top: 15px;
+        }
+
+        .background {
+            width: 380px;
+            height: 620px;
+            background: url('Images\\hoshino.jpg');
+            background-size : cover;
+            background-position: center;
+            border: 3px solid green;
+            margin-left: 40px;
+        }
+
+        .another {
+            border: 2px solid rgb(10, 137, 255);
+            margin-left: 40px;
+        }
+
+        .line {
+            background-color: white;
+            height: 3px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            margin-left: 30px;
+            margin-right: 30px;
+
+        }
+    </style>
+</head>
+<body>
+    <h2 class = "head">Linear-gradient</h2>
+    <div id = "gradient">
+    </div>
+    <div class = "line"></div>
+    <h2 class = "head">Image</h2>
+    <div class = "background">
+    </div>
+    <div class = "line"></div>
+    <h2 class = "head">wallpaper</h2>
+    <img src="Images/harry.jpg" alt="" width="800px" height="410px" class = "another">
+</body>
+</html>

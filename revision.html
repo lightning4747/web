@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML & CSS Revision Guide</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Layout and Navigation */
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 2rem auto;
+            gap: 2rem;
+        }
+        
+        nav {
+            flex: 0 0 250px;
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+        
+        nav h2 {
+            color: #6a11cb;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        nav ul {
+            list-style: none;
+        }
+        
+        nav li {
+            margin-bottom: 0.8rem;
+        }           
+        
+        nav a {
+            text-decoration: none;
+            color: #555;
+            display:             block;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover {
+            background-color: #f0f5ff;
+            color: #6a11cb;
+        }
+        
+        main {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Content Styling */
+        section {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        section:last-child {
+            border-bottom: none;
+        }
+        
+        h2 {
+            color: #6a11cb;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            color: #2575fc;
+            margin: 1.5rem 0 0.8rem;
+            font-size: 1.4rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        code {
+            background-color: #f5f7fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .example {
+            background-color: #f9f9f9;
+            border-left: 4px solid #6a11cb;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #6a11cb;
+        }
+        
+        .demo-box {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        
+        .demo-box h4 {
+            margin-bottom: 0.5rem;
+            color: #2575fc;
+        }
+        
+        .code-result {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .code-panel, .result-panel {
+            flex: 1;
+        }
+        
+        .code-panel h4, .result-panel h4 {
+            margin-bottom: 0.5rem;
+            color: #2575fc;
+        }
+        
+        .result-panel .demo-box {
+            min-height: 150px;
+        }
+        
+        /* Interactive Elements */
+        .interactive-demo {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 2rem;
+            border-radius: 10px;
+            color: white;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .interactive-demo h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        button {
+            background-color: white;
+            color: #f5576c;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .color-box {
+            width: 100px;
+            height: 100px;
+            margin: 1rem auto;
+            background-color: #6a11cb;
+            border-radius: 10px;
+            transition: all 0.5s ease;
+        }
+        
+        /* Flexbox Demo */
+        .flex-container {
+            display: flex;
+            gap: 10px;
+            margin: 1rem 0;
+        }
+        
+        .flex-item {
+            background: #6a11cb;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            flex: 1;
+            text-align: center;
+        }
+        
+        /* Grid Demo */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 1rem 0;
+        }
+        
+        .grid-item {
+            background: #2575fc;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            nav {
+                position: static;
+            }
+            
+            .code-result {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>HTML & CSS Revision Guide</h1>
+        <p class="subtitle">From Basics to Advanced Concepts with Interactive Examples</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <h2>Topics</h2>
+            <ul>
+                <li><a href="#html-basics">HTML Basics</a></li>
+                <li><a href="#html-semantics">HTML Semantics</a></li>
+                <li><a href="#css-basics">CSS Basics</a></li>
+                <li><a href="#css-box-model">CSS Box Model</a></li>
+                <li><a href="#css-layout">CSS Layout</a></li>
+                <li><a href="#css-responsive">Responsive Design</a></li>
+                <li><a href="#css-animations">CSS Animations</a></li>
+            </ul>
+        </nav>
+        
+        <main>
+            <section id="html-basics">
+                <h2>HTML Basics</h2>
+                <p>HTML (HyperText Markup Language) is the standard markup language for creating web pages. It describes the structure of a web page.</p>
+                
+                <h3>Basic HTML Document Structure</h3>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Document Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;My First Heading&lt;/h1&gt;
+    &lt;p&gt;My first paragraph.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                
+                <h3>Common HTML Elements</h3>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="code-result">
+                        <div class="code-panel">
+                            <h4>HTML Code</h4>
+                            <pre><code>&lt;h1&gt;Main Heading&lt;/h1&gt;
+&lt;h2&gt;Subheading&lt;/h2&gt;
+&lt;p&gt;This is a paragraph with &lt;strong&gt;bold text&lt;/strong&gt; and &lt;em&gt;italic text&lt;/em&gt;.&lt;/p&gt;
+&lt;a href="#"&gt;This is a link&lt;/a&gt;
+&lt;img src="image.jpg" alt="Description"&gt;
+&lt;ul&gt;
+    &lt;li&gt;List item 1&lt;/li&gt;
+    &lt;li&gt;List item 2&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                        </div>
+                        <div class="result-panel">
+                            <h4>Result</h4>
+                            <div class="demo-box">
+                                <h1>Main Heading</h1>
+                                <h2>Subheading</h2>
+                                <p>This is a paragraph with <strong>bold text</strong> and <em>italic text</em>.</p>
+                                <a href="#">This is a link</a>
+                                <p><em>Note: Image would appear here</em></p>
+                                <ul>
+                                    <li>List item 1</li>
+                                    <li>List item 2</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="html-semantics">
+                <h2>HTML Semantic Elements</h2>
+                <p>Semantic HTML elements clearly describe their meaning to both the browser and the developer.</p>
+                
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="code-result">
+                        <div class="code-panel">
+                            <h4>HTML Code</h4>
+                            <pre><code>&lt;header&gt;
+    &lt;h1&gt;Website Title&lt;/h1&gt;
+    &lt;nav&gt;
+        &lt;a href="#"&gt;Home&lt;/a&gt;
+        &lt;a href="#"&gt;About&lt;/a&gt;
+    &lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+    &lt;article&gt;
+        &lt;h2&gt;Article Title&lt;/h2&gt;
+        &lt;p&gt;Article content...&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;aside&gt;
+        &lt;h3&gt;Related Links&lt;/h3&gt;
+        &lt;ul&gt;
+            &lt;li&gt;&lt;a href="#"&gt;Link 1&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/aside&gt;
+&lt;/main&gt;
+&lt;footer&gt;
+    &lt;p&gt;Copyright information&lt;/p&gt;
+&lt;/footer&gt;</code></pre>
+                        </div>
+                        <div class="result-panel">
+                            <h4>Result</h4>
+                            <div class="demo-box">
+                                <div style="background: #f0f0f0; padding: 10px; margin-bottom: 10px;">
+                                    <h1 style="margin: 0;">Website Title</h1>
+                                    <nav style="margin-top: 5px;">
+                                        <a href="#" style="margin-right: 10px;">Home</a>
+                                        <a href="#">About</a>
+                                    </nav>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <article style="flex: 3; background: #e6f7ff; padding: 10px;">
+                                        <h2 style="margin-top: 0;">Article Title</h2>
+                                        <p>Article content...</p>
+                                    </article>
+                                    <aside style="flex: 1; background: #fff2e6; padding: 10px;">
+                                        <h3 style="margin-top: 0;">Related Links</h3>
+                                        <ul>
+                                            <li><a href="#">Link 1</a></li>
+                                        </ul>
+                                    </aside>
+                                </div>
+                                <footer style="background: #f0f0f0; padding: 10px; margin-top: 10px;">
+                                    <p style="margin: 0;">Copyright information</p>
+                                </footer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="css-basics">
+                <h2>CSS Basics</h2>
+                <p>CSS (Cascading Style Sheets) is used to style and layout web pages.</p>
+                
+                <h3>CSS Syntax</h3>
+                <pre><code>selector {
+    property: value;
+}</code></pre>
+                
+                <h3>CSS Selectors</h3>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="code-result">
+                        <div class="code-panel">
+                            <h4>CSS Code</h4>
+                            <pre><code>/* Element selector */
+p {
+    color: blue;
+}
+
+/* Class selector */
+.highlight {
+    background-color: yellow;
+}
+
+/* ID selector */
+#main-title {
+    font-size: 2rem;
+}
+
+/* Grouping selectors */
+h1, h2, h3 {
+    font-family: Arial, sans-serif;
+}</code></pre>
+                        </div>
+                        <div class="result-panel">
+                            <h4>Result</h4>
+                            <div class="demo-box">
+                                <h1 id="main-title">Main Title</h1>
+                                <p>This is a regular paragraph.</p>
+                                <p class="highlight">This paragraph has a highlight class.</p>
+                                <h2>Subheading</h2>
+                                <h3>Smaller heading</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="css-box-model">
+                <h2>CSS Box Model</h2>
+                <p>Every element in web design is a rectangular box. The CSS box model describes this box with content, padding, border, and margin.</p>
+                
+                <div class="interactive-demo">
+                    <h3>Box Model Interactive Demo</h3>
+                    <div class="color-box" id="box-model-demo"></div>
+                    <div class="demo-controls">
+                        <button onclick="changePadding()">Change Padding</button>
+                        <button onclick="changeMargin()">Change Margin</button>
+                        <button onclick="changeBorder()">Change Border</button>
+                        <button onclick="resetBox()">Reset</button>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Box Model Example:</div>
+                    <div class="code-result">
+                        <div class="code-panel">
+                            <h4>CSS Code</h4>
+                            <pre><code>.box {
+    width: 200px;
+    height: 100px;
+    padding: 20px;
+    border: 5px solid #6a11cb;
+    margin: 30px;
+    background-color: #f0f5ff;
+}</code></pre>
+                        </div>
+                        <div class="result-panel">
+                            <h4>Result</h4>
+                            <div class="demo-box">
+                                <div style="width: 200px; height: 100px; padding: 20px; border: 5px solid #6a11cb; margin: 30px; background-color: #f0f5ff;">
+                                    Content Area
+                                </div>
+                                <p style="margin-top: 10px; font-size: 0.9rem;">
+                                    <strong>Total width:</strong> 200px (width) + 40px (padding) + 10px (border) = 250px<br>
+                                    <strong>Total height:</strong> 100px (height) + 40px (padding) + 10px (border) = 150px
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="css-layout">
+                <h2>CSS Layout</h2>
+                <p>CSS provides several layout techniques for positioning elements on a web page.</p>
+                
+                <h3>Flexbox</h3>
+                <p>Flexbox is a one-dimensional layout method for arranging items in rows or columns.</p>
+                
+                <div class="example">
+                    <div class="example-title">Flexbox Example:</div>
+                    <div class="code-result">
+                        <div class="code-panel">
+                            <h4>CSS Code</h4>
+                            <pre><code>.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}</code></pre>
+                        </div>
+                        <div class="result-panel">
+                            <h4>Result</h4>
+                            <div class="demo-box">
+                                <div class="flex-container">
+                                    <div class="flex-item">Item 1</div>
+                                    <div class="flex-item">Item 2</div>
+                                    <div class="flex-item">Item 3</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>CSS Grid</h3>
+                <p>CSS Grid is a two-dimensional layout system that handles both rows and columns.</p>
+                
+                <div class="example">
+                    <div class="example-title">Grid Example:</div>
+                    <div class="code-result">
+                        <div class="code-panel">
+                            <h4>CSS Code</h4>
+                            <pre><code>.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}</code></pre>
+                        </div>
+                        <div class="result-panel">
+                            <h4>Result</h4>
+                            <div class="demo-box">
+                                <div class="grid-container">
+                                    <div class="grid-item">Item 1</div>
+                                    <div class="grid-item">Item 2</div>
+                                    <div class="grid-item">Item 3</div>
+                                    <div class="grid-item">Item 4</div>
+                                    <div class="grid-item">Item 5</div>
+                                    <div class="grid-item">Item 6</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="css-responsive">
+                <h2>Responsive Design</h2>
+                <p>Responsive web design makes your web page look good on all devices.</p>
+                
+                <h3>Media Queries</h3>
+                <p>Media queries allow you to apply CSS styles depending on device characteristics.</p>
+                
+                <div class="example">
+                    <div class="example-title">Media Query Example:</div>
+                    <pre><code>/* Default styles for mobile */
+.container {
+    padding: 10px;
+}
+
+/* Styles for tablets */
+@media (min-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+}
+
+/* Styles for desktops */
+@media (min-width: 1024px) {
+    .container {
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}</code></pre>
+                </div>
+                
+                <h3>Viewport Meta Tag</h3>
+                <p>The viewport meta tag controls the layout on mobile browsers.</p>
+                <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code></pre>
+            </section>
+            
+            <section id="css-animations">
+                <h2>CSS Animations</h2>
+                <p>CSS allows you to create animations without JavaScript.</p>
+                
+                <h3>Transitions</h3>
+                <p>CSS transitions allow you to change property values smoothly over a given duration.</p>
+                
+                <div class="example">
+                    <div class="example-title">Transition Example:</div>
+                    <div class="code-result">
+                        <div class="code-panel">
+                            <h4>CSS Code</h4>
+                            <pre><code>.button {
+    background-color: #6a11cb;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background-color: #2575fc;
+    transform: scale(1.05);
+}</code></pre>
+                        </div>
+                        <div class="result-panel">
+                            <h4>Result</h4>
+                            <div class="demo-box">
+                                <button style="background-color: #6a11cb; color: white; padding: 10px 20px; border: none; border-radius: 5px; transition: all 0.3s ease; cursor: pointer;" 
+                                        onmouseover="this.style.backgroundColor='#2575fc'; this.style.transform='scale(1.05)'" 
+                                        onmouseout="this.style.backgroundColor='#6a11cb'; this.style.transform='scale(1)'">
+                                    Hover Me
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Keyframe Animations</h3>
+                <p>CSS keyframe animations allow you to create more complex animations.</p>
+                
+                <div class="example">
+                    <div class="example-title">Keyframe Animation Example:</div>
+                    <div class="code-result">
+                        <div class="code-panel">
+                            <h4>CSS Code</h4>
+                            <pre><code>@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.animated-box {
+    width: 50px;
+    height: 50px;
+    background-color: #6a11cb;
+    animation: bounce 2s infinite;
+}</code></pre>
+                        </div>
+                        <div class="result-panel">
+                            <h4>Result</h4>
+                            <div class="demo-box">
+                                <div style="width: 50px; height: 50px; background-color: #6a11cb; animation: bounce 2s infinite;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Interactive Box Model Demo
+        const box = document.getElementById('box-model-demo');
+        
+        function changePadding() {
+            box.style.padding = '30px';
+            box.innerHTML = 'Padding: 30px';
+        }
+        
+        function changeMargin() {
+            box.style.margin = '20px';
+            box.innerHTML = 'Margin: 20px';
+        }
+        
+        function changeBorder() {
+            box.style.border = '10px solid #2575fc';
+            box.innerHTML = 'Border: 10px';
+        }
+        
+        function resetBox() {
+            box.style.padding = '10px';
+            box.style.margin = '10px';
+            box.style.border = '2px solid white';
+            box.innerHTML = '';
+        }
+        
+        // Add bounce animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bounce {
+                0%, 100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-20px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
