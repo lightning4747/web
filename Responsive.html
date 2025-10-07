@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Mobile First Approach */
+.container {
+    width: 100%;
+    padding: 10px;
+    margin: 0 auto;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+        padding: 20px;
+    }
+    
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1200px;
+    }
+    
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .mobile-menu {
+        display: none; /* Hide mobile menu on desktop */
+    }
+}
+
+/* Mobile menu */
+@media (max-width: 767px) {
+    .desktop-nav {
+        display: none; /* Hide desktop nav on mobile */
+    }
+    
+    .mobile-menu {
+        display: block;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+    <nav class="navbar">
+        <div class="logo">MySite</div>
+        <div class="desktop-nav">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+        <button class="mobile-menu">☰</button>
+    </nav>
+    
+    <div class="card-grid">
+        <div class="card">
+            <h3>Card 1</h3>
+            <p>This card will stack on mobile, show 2 per row on tablet, and 3 per row on desktop.</p>
+        </div>
+        <div class="card">
+            <h3>Card 2</h3>
+            <p>Responsive design in action!</p>
+        </div>
+        <div class="card">
+            <h3>Card 3</h3>
+            <p>Try resizing your browser window.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
