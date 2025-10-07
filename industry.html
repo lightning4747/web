@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <style>
+        /* Design System */
+        :root {
+            --color-primary: #3b82f6;
+            --color-background: #ffffff;
+            --color-text: #1f2937;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --color-background: #1a1a1a;
+            --color-text: #ffffff;
+        }
+
+        /* Base Styles */
+        body {
+            background: var(--color-background);
+            color: var(--color-text);
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        /* Component */
+        .card {
+            background: var(--color-background);
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            container-type: inline-size;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Utilities */
+        .text-lg { font-size: 1.125rem; }
+        .font-semibold { font-weight: 600; }
+        .mb-4 { margin-bottom: 1rem; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-4 { gap: 1rem; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <div style="max-width: 400px; margin: 2rem auto; padding: 1rem;">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-lg font-semibold">Best Practices Demo</h1>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                🌙
+            </button>
+        </div>
+
+        <div class="card">
+            <h2 class="font-semibold mb-4">Modern CSS Card</h2>
+            <p>This card demonstrates industry best practices including:</p>
+            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                <li>CSS Custom Properties</li>
+                <li>Responsive Design</li>
+                <li>Accessibility</li>
+                <li>Performance</li>
+                <li>Dark Mode</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+        }
+    </script>
+</body>
+</html>

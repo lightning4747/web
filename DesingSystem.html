@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Design System Demonstration</title>
+    <style>
+        /* 1. CSS Custom Properties for Design System */
+        :root {
+            /* Color System */
+            --color-primary: #3b82f6;
+            --color-primary-dark: #1d4ed8;
+            --color-secondary: #6b7280;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+
+            /* Typography Scale */
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+
+            /* Spacing Scale */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+
+            /* Breakpoints */
+            --breakpoint-sm: 640px;
+            --breakpoint-md: 768px;
+            --breakpoint-lg: 1024px;
+
+            /* Animation */
+            --transition-base: all 0.2s ease-in-out;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Default light theme colors for dark mode demo */
+            --color-background: #ffffff;
+            --color-text: #1a1a1a;
+        }
+
+        /* 2. Modern Reset */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: sans-serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            min-height: 100vh;
+            padding: var(--space-5);
+            line-height: 1.5;
+        }
+
+        /* 3. Utility-First Approach */
+        /* Layout */
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .block { display: block; }
+        .hidden { display: none; }
+
+        /* Spacing */
+        .m-0 { margin: 0; }
+        .m-4 { margin: var(--space-4); }
+        .p-0 { padding: 0; }
+        .p-4 { padding: var(--space-4); }
+
+        /* Typography */
+        .text-center { text-align: center; }
+        .font-bold { font-weight: bold; }
+        .text-primary { color: var(--color-primary); }
+        .text-xl { font-size: var(--text-xl); }
+
+        /* 4. Component Styles with BEM */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-3) var(--space-5);
+            border: none;
+            border-radius: 6px;
+            font-size: var(--text-base);
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition-base);
+            position: relative;
+            overflow: hidden;
+            /* Make it focusable for the accessibility demo */
+        }
+
+        .btn--primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn--primary:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn--primary:active {
+            transform: translateY(0);
+        }
+
+        .btn--disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* 5. Responsive Design with Container Queries */
+        /* To make container queries work in browsers that support it */
+        .card-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            border: 1px solid var(--color-secondary);
+            padding: var(--space-4);
+        }
+
+        .card {
+            container-type: inline-size;
+            background: var(--color-background);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: var(--space-4);
+            border: 1px solid var(--color-primary); /* just for visibility */
+        }
+
+        @container (min-width: 400px) {
+            .card {
+                padding: var(--space-5);
+                background: #f0f0ff; /* Visual cue for the query being active */
+            }
+        }
+
+        /* 6. Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus styles for keyboard navigation */
+        .focus\:ring:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-primary);
+        }
+
+        /* 7. Performance Optimizations */
+        .animate-slide {
+            transform: translateX(0); /* Initial state */
+            opacity: 1;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .optimized-animation {
+            /* Used to test will-change: transform; */
+            height: 50px;
+            width: 50px;
+            background: var(--color-warning);
+            border-radius: 50%;
+            transition: transform 1s;
+        }
+        .optimized-animation:hover {
+            transform: translateX(100px) scale(1.2);
+        }
+
+        /* 8. Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background: #1a1a1a;
+                --color-text: #ffffff;
+            }
+        }
+
+        /* The [data-theme="dark"] attribute can be added to the html or body tag to force dark mode */
+        [data-theme="dark"] {
+            --color-background: #1a1a1a;
+            --color-text: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="text-xl font-bold text-primary m-4">CSS Design System Demo</h1>
+
+    <div class="card-container">
+        <h2 style="margin-bottom: var(--space-3);">Utility & Component Demo</h2>
+        <div class="flex" style="gap: var(--space-4);">
+            <div class="block p-4" style="border: 1px solid var(--color-secondary);">
+                <p class="text-primary font-bold">Utility-First</p>
+                <p class="text-xs m-4">Primary Color, Bold, Extra Margin</p>
+            </div>
+            <a href="#" class="btn btn--primary focus:ring" tabindex="0">
+                Primary Button
+            </a>
+            <button class="btn btn--primary btn--disabled">
+                Disabled Button
+            </button>
+            <a href="#" class="btn btn--primary animate-slide" tabindex="0" style="background: var(--color-success);">
+                Animated Button (Success)
+            </a>
+        </div>
+    </div>
+    
+    <div class="card-container">
+        <h2 style="margin-bottom: var(--space-3);">Container Query Demo</h2>
+        <p style="font-size: var(--text-sm); margin-bottom: var(--space-2);">Resize the browser width to see the card's padding change when its width is $\geq 400\text{px}$.</p>
+        <div class="card">
+            <p style="font-size: var(--text-base);">Card Content (Padding changes on resize)</p>
+        </div>
+    </div>
+
+    <div class="card-container">
+        <h2 style="margin-bottom: var(--space-3);">Accessibility & Performance</h2>
+        <p style="font-size: var(--text-sm); margin-bottom: var(--space-3);">Use the $\text{Tab}$ key to focus the button above to see the accessible **focus ring**.</p>
+        <div class="optimized-animation" title="Hover to see animation, will-change applied for optimization."></div>
+        <p style="margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-secondary);">Hover the yellow circle to see the optimized animation.</p>
+    </div>
+
+    <div class="card-container" data-theme="dark" style="margin-top: 3rem;">
+        <h2 style="color: var(--color-text); margin-bottom: var(--space-3);">Dark Mode (Forced via [data-theme="dark"])</h2>
+        <div class="card">
+            <p style="color: var(--color-text);">This container and its children inherit the dark theme colors from the $\text{data-theme}$ attribute.</p>
+        </div>
+    </div>
+
+</body>
+</html>
