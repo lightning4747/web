@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic HTML Website</title>
+    <style>
+        /* Basic Styling for Clarity */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 960px;
+            margin: auto;
+            overflow: hidden;
+            padding: 0 2rem;
+        }
+        /* Header Styling */
+        .site-header {
+            background: #333;
+            color: #fff;
+            padding: 1rem 0;
+            border-bottom: 3px solid #007bff;
+        }
+        .site-header h1 {
+            margin: 0;
+            padding-left: 2rem;
+            display: inline-block;
+        }
+        /* Navigation Styling */
+        nav {
+            float: right;
+            margin-right: 2rem;
+        }
+        nav ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        nav li {
+            display: inline;
+            margin-left: 20px;
+            padding-top: 10px;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        nav a:hover {
+            color: #007bff;
+        }
+        /* Main Content & Layout */
+        main {
+            padding: 2rem 0;
+            display: flex;
+        }
+        .main-content {
+            flex: 3; /* Takes up 3/4 of the space */
+            margin-right: 20px;
+        }
+        /* Section and Article Styling */
+        section {
+            margin-bottom: 2rem;
+        }
+        article {
+            background: #fff;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        article h2 {
+            margin-top: 0;
+        }
+        .article-meta {
+            font-size: 0.8em;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 15px;
+        }
+        /* Aside (Sidebar) Styling */
+        aside {
+            flex: 1; /* Takes up 1/4 of the space */
+            background: #fff;
+            padding: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        /* Footer Styling */
+        .site-footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <h1>Semantic Site</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <div class="main-content">
+            <section id="blog-posts">
+                <h2>Latest Posts</h2>
+
+                <article>
+                    <header>
+                        <h2>The Power of Semantic HTML</h2>
+                    </header>
+                    <p>Semantic HTML elements are those that clearly describe their meaning in a human- and machine-readable way. Elements such as <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;article&gt;</code>, and <code>&lt;section&gt;</code> are all considered semantic because they accurately describe the purpose of the element and the type of content that is inside them.</p>
+                    <p>Using semantic HTML is crucial for accessibility, as screen readers use these elements to help visually impaired users navigate a page. It also helps search engines like Google better understand and rank your site's content.</p>
+                    <footer class="article-meta">
+                        Posted by Jane Doe on <time datetime="2025-10-08">October 8, 2025</time>
+                    </footer>
+                </article>
+
+                <article>
+                    <header>
+                        <h2>Understanding Flexbox vs. Grid</h2>
+                    </header>
+                    <p>CSS layout models have evolved significantly. While floats were once the standard, we now have powerful tools like Flexbox and CSS Grid. Flexbox is ideal for one-dimensional layouts (a row or a column), such as aligning items in a navigation bar. CSS Grid, on the other hand, is designed for complex, two-dimensional layouts, allowing you to control both rows and columns with ease.</p>
+                    <footer class="article-meta">
+                        Posted by John Smith on <time datetime="2025-10-07">October 7, 2025</time>
+                    </footer>
+                </article>
+
+            </section>
+        </div>
+
+        <aside>
+            <h3>Related Resources</h3>
+            <ul>
+                <li><a href="#">MDN Web Docs</a></li>
+                <li><a href="#">W3Schools</a></li>
+                <li><a href="#">CSS-Tricks</a></li>
+                <li><a href="#">A List Apart</a></li>
+            </ul>
+            <h3>Archives</h3>
+            <ul>
+                <li><a href="#">September 2025</a></li>
+                <li><a href="#">August 2025</a></li>
+                <li><a href="#">July 2025</a></li>
+            </ul>
+        </aside>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2025 Semantic Website. All Rights Reserved.</p>
+        <p>Follow us on <a href="#">Social Media</a></p>
+    </footer>
+
+</body>
+</html>
