@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+     body {
+        display: flex;
+        background-color: cornflowerblue;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+     }
+     #container {
+        width: 260px;
+        height: 280px;
+        background-color: rgb(66, 104, 173);
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 10px 10px 0px rgb(53, 52, 52);
+
+
+     }
+     #display {
+        width: 100%;
+        height: 40px;
+        background-color: rgb(44, 96, 194);
+        margin-bottom: 20px;
+        color: aliceblue;
+        font-size: large;
+        font-weight: bold;
+        font-family: 'Times New Roman', Times, serif;
+
+     }
+     #button {
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        gap: 7px;
+        height: 200px;
+        border-radius: 15px;
+        
+
+     }
+     .btn {
+        border-radius: 4px;
+        font-size: large;
+
+     }
+     .btn:hover {
+        background-color: cornflowerblue;
+     }
+     
+    </style>
+</head>
+<body>
+    <div id = "container">
+        <input type="text" id = "display" disabled >
+        <div id = "button" >
+            <button class = "btn" onclick="appendtodisplay(7)">7</button>
+            <button class = "btn" onclick="appendtodisplay(8)">8</button>
+            <button class = "btn" onclick="appendtodisplay(9)">9</button>
+            <button class = "btn" onclick="operators('/')">/</button>
+            <button class = "btn" onclick="appendtodisplay(4)">4</button>
+            <button class = "btn" onclick="appendtodisplay(5)">5</button>
+            <button class = "btn" onclick="appendtodisplay(6)">6</button>
+            <button class = "btn" onclick="operators('*')">*</button>
+            <button class = "btn" onclick="appendtodisplay(1)">1</button>
+            <button class = "btn" onclick="appendtodisplay(2)">2</button>
+            <button class = "btn" onclick="appendtodisplay(3)">3</button>
+            
+            <button class = "btn" onclick="operators('+')">+</button>
+            <button class = "btn" onclick="appendtodisplay(0)">0</button>
+            
+            <button class = "btn" onclick="elvalute()">=</button>
+            <button class = "btn" onclick="decimal('.')">.</button>
+            <button class = "btn" onclick="operators('-')">-</button>
+            <button class = "btn" onclick="clears()">clear</button>
+
+        </div>
+    </div>
+    <script>
+        let display = document.getElementById("display");
+        function appendtodisplay (number)  {
+            display.value+= number;
+        }
+        function clears(num) {
+            display.value = "";
+            
+        }
+        function elvalute() {
+            try{
+            display.value = eval(display.value);
+            }
+            catch {
+                display.value = "Error nigger"
+            }
+        }
+        function operators (op) {
+            display.value += " " + op + " ";
+        }
+        function decimal() {
+            if(!display.value.includes('.')) {
+                display+='.';
+            }
+        }
+
+    </script>
+</body>
+</html>
