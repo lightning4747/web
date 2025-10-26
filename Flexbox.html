@@ -20,7 +20,6 @@
             font-weight: bolder;
             font-family: 'Courier New', Courier, monospace;
             font-size: small;
-            flex : 1;
        }
 
         .box {
@@ -33,7 +32,7 @@
            border: 5px solid rgb(238, 88, 88); 
         }
         #item-1 {
-            flex: 2;
+            flex: 1; /*flex-grow: 1 flex-shrink: 1 flex-basis: 0% */
         }
 
         #item-2 {
@@ -50,11 +49,11 @@
     
         <div id="item-1" class="box">flexbox/items</div>
         <div id="item-2" class="box">flexbox/items</div>
-        <div id="item-3" class="box">flexbox/items</div>
+        <div id="item-3" class="box">box/items</div>
+        <div id="item-4" class="box">x/items</div>
         <div id="item-4" class="box">flexbox/items</div>
         <div id="item-4" class="box">flexbox/items</div>
-        <div id="item-4" class="box">flexbox/items</div>
-        <div id="item-4" class="box">flexbox/items</div>
+        <div id="item-4" class="box">box/items</div>
         <div id="item-4" class="box">flexbox/items</div>
     </div>
 </body>
