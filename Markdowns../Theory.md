@@ -1,9 +1,9 @@
 > **"How Browsers Work & How Web Pages Render"**
 
 It will cover both **deep theory + relevant HTML/CSS/JS examples**, written like professional developer documentation.
-Since it’ll be long, I’ll generate it **in parts**, each saved-ready as Markdown.
 
-Here’s **Part 1 – The Browser and Its Architecture** 👇
+
+ **The Browser and Its Architecture** 
 
 ---
 
