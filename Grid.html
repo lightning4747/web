@@ -1,3 +1,79 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0 ;
+            padding: 0;
+        }
+
+        body {
+            background-color: cornflowerblue;
+            height: 100vh;
+            display: grid;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .container {
+            border: 3px solid rgb(54, 16, 144);
+            padding:10px;
+            display: grid;
+            grid-auto-columns: 200px; /*implicite grid*/
+            /* grid-auto-flow:;  */
+            grid-auto-rows:200px;
+            justify-items:center ;
+            align-items: center;
+            justify-content: baseline;
+            align-items: center;
+            gap: 1em;
+            
+        }
+        .items {
+            padding: 2em;
+            width: 100px;
+            height: 100px;
+            background-color: aquamarine;
+            border: 2px solid black;
+            border-radius: 7px;
+            font-weight: bolder;
+            font-family: 'Courier New', Courier, monospace;
+            font-style: italic;
+            transition:all 0.5s ease ;
+            
+        }
+        .items:hover {
+            background-color: rgb(70, 185, 147);
+            cursor:grab;
+        }
+        .items:active{
+            cursor: grabbing;
+            background-color: bisque;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="items item-1">item-1</div>
+        <div class="items item-2">item-2</div>
+        <div class="items item-3">item-3</div>
+        <div class="items item-4">item-4</div>
+        <div class="items item-5">item-5</div>
+        <div class="items item-6">item-6</div>
+        <div class="items item-7">item-7</div>
+        <div class="items item-8">item-8</div>
+        <div class="items item-9">item-9</div>
+        <div class="items item-9">item-10</div>
+        <div class="items item-9">item-11</div>
+    </div>
+</body>
+</html> -->
+
+<!-- bento grid -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,47 +82,67 @@
     <title>Document</title>
     <style>
         * {
-         box-sizing: border-box;   
+            box-sizing: border-box;
+            margin: 0 ;
+            padding: 0;
         }
-       body {
-        background-color: rgb(1, 34, 53);
-       }
-        .items {
-           background-color: rgb(106, 38, 38);      
-           padding: 1em;
-           text-align: center;
-           /* border-radius: 15px; */
-           border: 5px solid rgb(21, 252, 9); 
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2%;
+
         }
+
         .container {
-           border: 7px solid rgb(245, 245, 245);
-           margin: 0 auto;
-           display: grid;
-           grid-template-columns: repeat(7,100px);
-           grid-template-rows: repeat(7,100px);
+            
+            
+            display: grid;
+            grid-auto-columns: 200px;
+            grid-auto-rows: 200px ;
+            gap:1em;
+            grid-template-areas:
+            "box1 box1 box1 box3"
+            "box2 box4 box5 box5 " ;
         }
-        .item-1 {
-            grid-area: 1 / 1 / 3 / 5 ;
+        .items {
+            padding: 2em;
+            /* width: 100px; */
+            /* height: 100px; */
+            background-color: aquamarine;
+            border: 2px solid black;
+            border-radius: 7px;
+            font-weight: bolder;
+            font-family: 'Courier New', Courier, monospace;
+            font-style: italic;
+            transition:all 0.5s ease ;
+            
         }
-        .item-2 {
-            grid-row: 3 / 8;
-            grid-column: 1 / 5;
+        .items:hover {
+            background-color: rgb(70, 185, 147);
+            cursor:grab;
         }
-        .item-3 {
-            grid-area: 2 / 4 / 4 / 6;
-            z-index: 1;
+        .items:active{
+            cursor: grabbing;
+            background-color: bisque;
         }
-        .item-4 {
-            grid-area : 1 / 5 / 8 / 8
-        }
+          .item-1 { grid-area: box1; }
+        .item-2 { grid-area: box2; }
+        .item-3 { grid-area: box3; }
+        .item-4 { grid-area: box4; }
+        .item-5 { grid-area: box5; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="items item-1">flex1</div>
-        <div class="items item-2">flex2</div>
-        <div class="items item-3">flex3</div>
-        <div class="items item-4">flex4</div>
+        <div class="items item-1">item-1</div>
+        <div class="items item-2">item-2</div>
+        <div class="items item-3">item-3</div>
+        <div class="items item-4">item-4</div>
+        <div class="items item-5">item-5</div>
+        
     </div>
 </body>
 </html>
