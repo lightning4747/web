@@ -148,6 +148,7 @@ a[href^="https"]:hover {
 |                       | Chaining Selectors       | `.container .box.active`   | Target `.box` inside `.container` **with class `active`**                     |
 |                       | Grouping Selectors       | `h1, h2, h3`               | Apply same style to multiple elements                                         |
 
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -254,3 +255,5 @@ a[href^="https"]:hover {
 
 </body>
 </html>
+```
+---
