@@ -147,3 +147,110 @@ a[href^="https"]:hover {
 |                       | Inheritance              | —                          | Some properties inherit automatically, e.g., `color`, `font-family`          |
 |                       | Chaining Selectors       | `.container .box.active`   | Target `.box` inside `.container` **with class `active`**                     |
 |                       | Grouping Selectors       | `h1, h2, h3`               | Apply same style to multiple elements                                         |
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Attribute Selectors Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    body {
+      background: #f3f3f3;
+      padding: 2rem;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    /* =====================
+       ATTRIBUTE SELECTORS
+       ===================== */
+
+    /* [attr] → selects elements having the attribute */
+    input[disabled] {
+      background: #ccc;
+      border: 2px solid #888;
+    }
+
+    /* [attr=value] → exact match */
+    input[type="text"] {
+      border: 2px solid blue;
+    }
+
+    /* [attr~=value] → contains word (space-separated list) */
+    div[class~="box"] {
+      background: lightgreen;
+      padding: 10px;
+      border: 2px solid darkgreen;
+    }
+
+    /* [attr|=value] → starts with value or value- */
+    p[lang|="en"] {
+      color: darkorange;
+      font-weight: bold;
+    }
+
+    /* [attr^=value] → starts with */
+    a[href^="https"] {
+      color: green;
+    }
+
+    /* [attr$=value] → ends with */
+    img[src$=".png"] {
+      border: 3px solid red;
+      border-radius: 10px;
+    }
+
+    /* [attr*=value] → contains anywhere */
+    a[href*="learn"] {
+      background: yellow;
+    }
+
+    /* Styling for demonstration */
+    div, input, a, img, p {
+      margin: 10px 0;
+      display: block;
+    }
+
+  </style>
+</head>
+<body>
+  <h2>CSS Attribute Selector Examples</h2>
+
+  <!-- [attr] -->
+  <input type="text" placeholder="Type something...">
+  <input type="text" disabled value="Disabled input">
+
+  <!-- [attr=value] -->
+  <input type="text" value="Exact type=text">
+
+  <!-- [attr~=value] -->
+  <div class="container box">This div has class="container box"</div>
+  <div class="container cube">This div does not match box</div>
+
+  <!-- [attr|=value] -->
+  <p lang="en">This paragraph has lang="en"</p>
+  <p lang="en-US">This paragraph has lang="en-US"</p>
+  <p lang="fr">This one is French</p>
+
+  <!-- [attr^=value] -->
+  <a href="https://example.com">Starts with https (green)</a>
+  <a href="http://example.com">Starts with http (no color)</a>
+
+  <!-- [attr$=value] -->
+  <img src="image.png" width="100" alt="png image">
+  <img src="photo.jpg" width="100" alt="jpg image">
+
+  <!-- [attr*=value] -->
+  <a href="https://mylearninghub.com">Contains “learn” → highlighted</a>
+  <a href="https://example.com">Does not contain “learn”</a>
+
+</body>
+</html>
