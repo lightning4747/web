@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursor Light Trail</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #0a0a0a;
+      overflow: hidden;
+      cursor: none; /* hides the default cursor */
+    }
+
+    .trail {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.7;
+      transform: translate(-50%, -50%);
+      filter: blur(8px);
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const trails = [];
+    const trailCount = 10; // number of dots following the cursor
+
+    for (let i = 0; i < trailCount; i++) {
+      const dot = document.createElement("div");
+      dot.classList.add("trail");
+      document.body.appendChild(dot);
+      trails.push({ el: dot, x: 0, y: 0 });
+    }
+
+    let mouseX = 0, mouseY = 0;
+
+    window.addEventListener("mousemove", (e) => {
+      mouseX = e.pageX;
+      mouseY = e.pageY;
+    });
+
+    function animate() {
+      let x = mouseX;
+      let y = mouseY;
+
+      trails.forEach((trail, index) => {
+        const next = trails[index + 1] || trails[0];
+        trail.x += (x - trail.x) * 0.3;
+        trail.y += (y - trail.y) * 0.3;
+
+        trail.el.style.transform = `translate(${trail.x}px, ${trail.y}px)`;
+        trail.el.style.opacity = 1 - index / trailCount;
+
+        x = trail.x;
+        y = trail.y;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
