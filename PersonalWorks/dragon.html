@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Cursor Follower</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            cursor: none;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ff5500, #ffaa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 85, 0, 0.5);
+        }
+
+        p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #aaa;
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Dragon container */
+        .dragon-container {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
+        .dragon {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 10px rgba(255, 100, 0, 0.7));
+        }
+
+        /* Fire particles */
+        .fire-particle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            background: radial-gradient(circle, #ff5500, #ffaa00);
+            box-shadow: 0 0 10px #ff5500;
+        }
+
+        /* Interactive elements */
+        .interactive {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 100, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid rgba(255, 100, 0, 0.3);
+        }
+
+        .interactive:hover {
+            background: rgba(255, 100, 0, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 100, 0, 0.5);
+        }
+
+        .interactive-1 {
+            top: 20%;
+            left: 20%;
+        }
+
+        .interactive-2 {
+            top: 20%;
+            right: 20%;
+        }
+
+        .interactive-3 {
+            bottom: 20%;
+            left: 20%;
+        }
+
+        .interactive-4 {
+            bottom: 20%;
+            right: 20%;
+        }
+
+        .interactive-5 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .pulse {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9996;
+            opacity: 0;
+            border: 2px solid rgba(255, 100, 0, 0.7);
+            box-shadow: 0 0 20px rgba(255, 100, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="dragon-container">
+    <svg class="dragon" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- Dragon Body - More streamlined and stable -->
+        <path class="dragon-body" d="M25,50 
+            C35,30 45,25 55,45 
+            C65,65 75,70 85,55 
+            C95,40 100,45 100,50 
+            L100,60 
+            C90,75 80,80 70,70 
+            C60,80 50,75 40,65 
+            C30,75 20,70 25,60 
+            Z" fill="#ff5500" stroke="#cc4400" stroke-width="1"/>
+        
+        <!-- Dragon Head - More detailed and expressive -->
+        <ellipse class="dragon-head" cx="102" cy="50" rx="12" ry="10" fill="#ff5500" stroke="#cc4400" stroke-width="1"/>
+        
+        <!-- Dragon Snout -->
+        <ellipse cx="110" cy="50" rx="6" ry="5" fill="#ff7733"/>
+        
+        <!-- Dragon Nostrils -->
+        <circle cx="108" cy="48" r="0.8" fill="#333"/>
+        <circle cx="108" cy="52" r="0.8" fill="#333"/>
+        
+        <!-- Dragon Eyes - More expressive -->
+        <circle class="dragon-eye" cx="98" cy="47" r="3" fill="#000"/>
+        <circle cx="98" cy="47" r="1.2" fill="#fff"/>
+        <circle cx="98.5" cy="46.5" r="0.5" fill="#fff"/>
+        
+        <!-- Dragon Horns - More prominent -->
+        <path class="dragon-horn" d="M95,38 Q92,28 98,25" stroke="#cc4400" stroke-width="2.5" fill="none"/>
+        <path class="dragon-horn" d="M92,40 Q88,30 95,27" stroke="#cc4400" stroke-width="2.5" fill="none"/>
+        
+        <!-- Dragon Ears -->
+        <path d="M94,35 Q90,32 92,28" stroke="#cc4400" stroke-width="1.5" fill="#ff7733"/>
+        
+        <!-- Dragon Wings - More structured and stable -->
+        <path class="dragon-wing left" d="M55,50 
+            Q45,25 35,40 
+            Q40,45 50,48 
+            Q48,42 45,38 
+            Q50,35 55,42 
+            Z" fill="rgba(255, 100, 0, 0.8)" stroke="#cc4400" stroke-width="0.8"/>
+        
+        <path class="dragon-wing right" d="M55,50 
+            Q65,25 75,40 
+            Q70,45 60,48 
+            Q62,42 65,38 
+            Q60,35 55,42 
+            Z" fill="rgba(255, 100, 0, 0.8)" stroke="#cc4400" stroke-width="0.8"/>
+        
+        <!-- Dragon Tail - More dynamic and flowing -->
+        <path class="dragon-tail" d="M25,50 
+            Q15,45 10,55 
+            Q5,70 12,75 
+            Q8,65 18,60 
+            Q15,55 20,52 
+            Q18,58 22,60 
+            Z" fill="#ff5500" stroke="#cc4400" stroke-width="1"/>
+        
+        <!-- Dragon Legs - Added for stability -->
+        <path class="dragon-leg" d="M40,60 
+            Q38,68 42,70 
+            Q44,65 42,62 
+            Z" fill="#cc4400"/>
+        
+        <path class="dragon-leg" d="M60,65 
+            Q58,73 62,75 
+            Q64,70 62,67 
+            Z" fill="#cc4400"/>
+        
+        <path class="dragon-leg" d="M75,60 
+            Q73,68 77,70 
+            Q79,65 77,62 
+            Z" fill="#cc4400"/>
+        
+        <!-- Dragon Spikes - More uniform and prominent -->
+        <path class="dragon-spike" d="M35,45 L32,35 L37,42" fill="#ff7733" stroke="#cc4400" stroke-width="0.5"/>
+        <path class="dragon-spike" d="M45,43 L42,33 L47,40" fill="#ff7733" stroke="#cc4400" stroke-width="0.5"/>
+        <path class="dragon-spike" d="M55,45 L52,35 L57,42" fill="#ff7733" stroke="#cc4400" stroke-width="0.5"/>
+        <path class="dragon-spike" d="M65,47 L62,37 L67,44" fill="#ff7733" stroke="#cc4400" stroke-width="0.5"/>
+        <path class="dragon-spike" d="M75,45 L72,35 L77,42" fill="#ff7733" stroke="#cc4400" stroke-width="0.5"/>
+        <path class="dragon-spike" d="M85,43 L82,33 L87,40" fill="#ff7733" stroke="#cc4400" stroke-width="0.5"/>
+        <path class="dragon-spike" d="M95,45 L92,35 L97,42" fill="#ff7733" stroke="#cc4400" stroke-width="0.5"/>
+        
+        <!-- Dragon Claws -->
+        <path d="M42,70 Q40,72 41,74 Q43,72 42,70" fill="#cc4400"/>
+        <path d="M62,75 Q60,77 61,79 Q63,77 62,75" fill="#cc4400"/>
+        <path d="M77,70 Q75,72 76,74 Q78,72 77,70" fill="#cc4400"/>
+    </svg>
+</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dragonContainer = document.querySelector('.dragon-container');
+            const dragonSvg = document.querySelector('.dragon');
+            const fireParticles = [];
+            const interactiveElements = document.querySelectorAll('.interactive');
+            let mouseX = 0;
+            let mouseY = 0;
+            let dragonX = window.innerWidth / 2;
+            let dragonY = window.innerHeight / 2;
+            let particleCount = 100;
+            let particleIndex = 0;
+            let isMouseMoving = false;
+            let mouseTimer;
+            let wingFlapState = 0;
+            let wingFlapDirection = 1;
+
+            // Create fire particles
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'fire-particle';
+                document.body.appendChild(particle);
+                fireParticles.push(particle);
+            }
+
+            // Track mouse movement
+            document.addEventListener('mousemove', function(e) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                // Handle mouse movement detection
+                if (!isMouseMoving) {
+                    isMouseMoving = true;
+                }
+                
+                clearTimeout(mouseTimer);
+                mouseTimer = setTimeout(() => {
+                    isMouseMoving = false;
+                }, 100);
+            });
+
+            // Dragon animation loop
+            function animateDragon() {
+                // Calculate distance to target (cursor)
+                const dx = mouseX - dragonX;
+                const dy = mouseY - dragonY;
+                
+                // Move dragon towards cursor with easing
+                dragonX += dx * 0.1;
+                dragonY += dy * 0.1;
+                
+                // Update dragon position
+                dragonContainer.style.left = (dragonX - 75) + 'px';
+                dragonContainer.style.top = (dragonY - 75) + 'px';
+                
+                // Calculate rotation angle based on movement direction
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                dragonContainer.style.transform = `rotate(${angle}deg)`;
+                
+                // Add fire particles when moving
+                if (isMouseMoving && Math.sqrt(dx * dx + dy * dy) > 5) {
+                    addFireParticles(dragonX, dragonY, angle);
+                }
+                
+                // Animate wings
+                animateWings();
+                
+                requestAnimationFrame(animateDragon);
+            }
+
+            // Add fire particles from dragon's mouth
+            function addFireParticles(x, y, angle) {
+                const radianAngle = angle * Math.PI / 180;
+                
+                // Calculate mouth position (front of dragon)
+                const mouthX = x + Math.cos(radianAngle) * 75;
+                const mouthY = y + Math.sin(radianAngle) * 75;
+                
+                // Add multiple particles
+                for (let i = 0; i < 3; i++) {
+                    const particle = fireParticles[particleIndex];
+                    
+                    // Random properties for particles
+                    const size = 4 + Math.random() * 8;
+                    const spread = 0.5;
+                    const particleAngle = radianAngle + (Math.random() - 0.5) * spread;
+                    const distance = 10 + Math.random() * 30;
+                    const duration = 300 + Math.random() * 500;
+                    
+                    // Position particle at dragon's mouth
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    particle.style.left = (mouthX - size/2) + 'px';
+                    particle.style.top = (mouthY - size/2) + 'px';
+                    particle.style.opacity = '1';
+                    
+                    // Animate particle
+                    const endX = mouthX + Math.cos(particleAngle) * distance;
+                    const endY = mouthY + Math.sin(particleAngle) * distance;
+                    
+                    particle.animate([
+                        { transform: 'scale(1)', opacity: 1 },
+                        { transform: 'scale(0.5)', opacity: 0 }
+                    ], {
+                        duration: duration,
+                        easing: 'cubic-bezier(0.1, 0.7, 1.0, 0.1)'
+                    });
+                    
+                    // Move particle during animation
+                    const startTime = Date.now();
+                    function moveParticle() {
+                        const elapsed = Date.now() - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        
+                        const currentX = mouthX + (endX - mouthX) * progress;
+                        const currentY = mouthY + (endY - mouthY) * progress;
+                        
+                        particle.style.left = (currentX - size/2) + 'px';
+                        particle.style.top = (currentY - size/2) + 'px';
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(moveParticle);
+                        }
+                    }
+                    moveParticle();
+                    
+                    // Hide particle after animation
+                    setTimeout(() => {
+                        particle.style.opacity = '0';
+                    }, duration);
+                    
+                    // Update index for next particle
+                    particleIndex = (particleIndex + 1) % particleCount;
+                }
+            }
+
+            // Animate dragon wings
+            function animateWings() {
+                // Update wing flap state
+                wingFlapState += wingFlapDirection * 0.1;
+                
+                // Reverse direction at limits
+                if (wingFlapState >= 1) {
+                    wingFlapState = 1;
+                    wingFlapDirection = -1;
+                } else if (wingFlapState <= 0) {
+                    wingFlapState = 0;
+                    wingFlapDirection = 1;
+                }
+                
+                // Apply wing animation (simplified - in a real implementation, 
+                // we would manipulate SVG paths or use CSS transforms on wing elements)
+                const wingScale = 0.8 + wingFlapState * 0.4;
+                dragonContainer.style.transform += ` scale(${wingScale})`;
+            }
+
+            // Add interaction effects
+            interactiveElements.forEach(element => {
+                element.addEventListener('mouseenter', function() {
+                    // Create pulse effect
+                    createPulse(mouseX, mouseY);
+                    
+                    // Add multiple fire particles
+                    for (let i = 0; i < 10; i++) {
+                        setTimeout(() => {
+                            addFireParticles(dragonX, dragonY, 
+                                Math.atan2(mouseY - dragonY, mouseX - dragonX) * 180 / Math.PI);
+                        }, i * 50);
+                    }
+                });
+            });
+
+            // Create pulse effect
+            function createPulse(x, y) {
+                const pulse = document.createElement('div');
+                pulse.className = 'pulse';
+                document.body.appendChild(pulse);
+                
+                // Style pulse
+                const size = 50 + Math.random() * 100;
+                pulse.style.width = size + 'px';
+                pulse.style.height = size + 'px';
+                pulse.style.left = (x - size/2) + 'px';
+                pulse.style.top = (y - size/2) + 'px';
+                pulse.style.opacity = '0.8';
+                
+                // Animate pulse
+                pulse.animate([
+                    { transform: 'scale(0.5)', opacity: 0.8 },
+                    { transform: 'scale(2)', opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                });
+                
+                // Remove pulse after animation
+                setTimeout(() => {
+                    document.body.removeChild(pulse);
+                }, 1000);
+            }
+
+            // Add click effect
+            document.addEventListener('click', function() {
+                // Create multiple pulses
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        createPulse(mouseX, mouseY);
+                    }, i * 100);
+                }
+                
+                // Add explosion of fire particles
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        addFireParticles(dragonX, dragonY, 
+                            Math.atan2(mouseY - dragonY, mouseX - dragonX) * 180 / Math.PI);
+                    }, i * 20);
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                // Reset dragon position if needed
+                dragonX = Math.min(dragonX, window.innerWidth);
+                dragonY = Math.min(dragonY, window.innerHeight);
+            });
+
+            // Start animation
+            animateDragon();
+        });
+    </script>
+</body>
+</html>
