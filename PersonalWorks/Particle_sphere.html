@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Sphere Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0f0f1f;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff0080, #00ffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #a0a0c0;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(16, 16, 32, 0.7);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            max-width: 800px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 150px;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #a0a0c0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #2a2a4a;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #00ffff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        .color-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.2);
+        }
+
+        .color-option.active {
+            border-color: white;
+            transform: scale(1.2);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #2a2a4a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        button:hover {
+            background: #3a3a5a;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .info {
+            max-width: 800px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(16, 16, 32, 0.5);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #a0a0c0;
+        }
+
+        /* Advanced color controls */
+        .advanced-color-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 10px;
+            max-width: 800px;
+        }
+
+        .color-mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .color-mode-btn {
+            padding: 8px 16px;
+            background: #2a2a4a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .color-mode-btn.active {
+            background: #00ffff;
+            color: #0f0f1f;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        .color-pickers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .color-picker-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .color-picker-label {
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+        }
+
+        input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            border: none;
+            border-radius: 50%;
+            padding: 0;
+        }
+
+        .gradient-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .gradient-angle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .control-group {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Particle Sphere Animation</h1>
+        <p class="subtitle">Interactive 3D particle system with advanced color customization</p>
+        
+        <div class="canvas-container">
+            <canvas id="particleCanvas"></canvas>
+        </div>
+
+        <div class="control-group">
+    <label>Color Scroll</label>
+    <div class="buttons">
+        <button id="scrollColorBtn">Scroll Colors</button>
+    </div>
+</div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="particleCount">Particle Count</label>
+                <input type="range" id="particleCount" min="50" max="500" value="200">
+            </div>
+            
+            <div class="control-group">
+                <label for="connectionDistance">Connection Distance</label>
+                <input type="range" id="connectionDistance" min="50" max="300" value="150">
+            </div>
+            
+            <div class="control-group">
+                <label for="rotationSpeed">Rotation Speed</label>
+                <input type="range" id="rotationSpeed" min="0" max="2" step="0.1" value="0.5">
+            </div>
+            
+            <div class="control-group">
+                <label for="particleSize">Particle Size</label>
+                <input type="range" id="particleSize" min="1" max="10" value="3">
+            </div>
+            
+            <div class="control-group">
+                <label>Preset Color Schemes</label>
+                <div class="color-controls">
+                    <div class="color-option active" style="background: linear-gradient(90deg, #ff0080, #00ffff);" data-scheme="cyan-magenta"></div>
+                    <div class="color-option" style="background: linear-gradient(90deg, #ff9900, #00ff99);" data-scheme="orange-green"></div>
+                    <div class="color-option" style="background: linear-gradient(90deg, #9900ff, #ffcc00);" data-scheme="purple-yellow"></div>
+                    <div class="color-option" style="background: linear-gradient(90deg, #ffffff, #6666ff);" data-scheme="white-blue"></div>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>Actions</label>
+                <div class="buttons">
+                    <button id="resetBtn">Reset</button>
+                    <button id="pulseBtn">Pulse</button>
+                    <button id="explodeBtn">Explode</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="advanced-color-controls">
+            <h3>Advanced Color Controls</h3>
+            
+          <div class="color-mode-selector">
+    <button class="color-mode-btn active" data-mode="single">Single Color</button>
+    <button class="color-mode-btn" data-mode="gradient">Gradient</button>
+    <button class="color-mode-btn" data-mode="multi">Multi-Color</button>
+    <button class="color-mode-btn" data-mode="pattern">Pattern</button>
+    <button class="color-mode-btn" data-mode="scroll">Scroll</button>
+</div>
+
+           <div class="color-pickers" id="scrollColorControls" style="display: none;">
+    <div class="color-picker-group">
+        <div class="color-picker-label">Scroll Speed</div>
+        <input type="range" id="scrollSpeed" min="0.1" max="2" step="0.1" value="0.5">
+    </div>
+    <div class="color-picker-group">
+        <div class="color-picker-label">Color Transition</div>
+        <input type="range" id="colorTransition" min="0.1" max="1" step="0.1" value="0.5">
+    </div>
+</div>
+            
+            <div class="color-pickers" id="singleColorControls">
+                <div class="color-picker-group">
+                    <div class="color-picker-label">Particle Color</div>
+                    <input type="color" id="particleColor" value="#00ffff">
+                </div>
+                <div class="color-picker-group">
+                    <div class="color-picker-label">Connection Color</div>
+                    <input type="color" id="connectionColor" value="#ff0080">
+                </div>
+            </div>
+            
+            <div class="color-pickers" id="gradientColorControls" style="display: none;">
+                <div class="color-picker-group">
+                    <div class="color-picker-label">Start Color</div>
+                    <input type="color" id="gradientStart" value="#ff0080">
+                </div>
+                <div class="color-picker-group">
+                    <div class="color-picker-label">End Color</div>
+                    <input type="color" id="gradientEnd" value="#00ffff">
+                </div>
+                <div class="gradient-controls">
+                    <div class="gradient-angle">
+                        <label for="gradientAngle">Gradient Angle:</label>
+                        <input type="range" id="gradientAngle" min="0" max="360" value="90">
+                        <span id="angleValue">90°</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="color-pickers" id="multiColorControls" style="display: none;">
+                <div class="color-picker-group">
+                    <div class="color-picker-label">Color 1</div>
+                    <input type="color" id="multiColor1" value="#ff0080">
+                </div>
+                <div class="color-picker-group">
+                    <div class="color-picker-label">Color 2</div>
+                    <input type="color" id="multiColor2" value="#00ffff">
+                </div>
+                <div class="color-picker-group">
+                    <div class="color-picker-label">Color 3</div>
+                    <input type="color" id="multiColor3" value="#ff9900">
+                </div>
+                <div class="color-picker-group">
+                    <div class="color-picker-label">Color 4</div>
+                    <input type="color" id="multiColor4" value="#00ff99">
+                </div>
+            </div>
+            
+            <div class="color-pickers" id="patternColorControls" style="display: none;">
+                <div class="color-picker-group">
+                    <div class="color-picker-label">Base Color</div>
+                    <input type="color" id="patternBaseColor" value="#00ffff">
+                </div>
+                <div class="color-picker-group">
+                    <div class="color-picker-label">Pattern Color</div>
+                    <input type="color" id="patternColor" value="#ff0080">
+                </div>
+                <div class="control-group">
+                    <label for="patternSize">Pattern Size</label>
+                    <input type="range" id="patternSize" min="1" max="10" value="5">
+                </div>
+            </div>
+        </div>
+        
+        <div class="info">
+            <p>This particle sphere animation demonstrates a 3D particle system with dynamic connections and advanced color customization. 
+            Choose from preset color schemes or use the advanced controls to create your own single color, gradient, multi-color, or pattern-based color schemes.</p>
+        </div>
+    </div>
+
+    <script>
+        // Get the canvas and context
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas dimensions
+        function setCanvasSize() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        setCanvasSize();
+        window.addEventListener('resize', setCanvasSize);
+
+        // Particle class
+        class Particle {
+            constructor(x, y, z) {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+                this.baseX = x;
+                this.baseY = y;
+                this.baseZ = z;
+                this.vx = 0;
+                this.vy = 0;
+                this.vz = 0;
+                this.size = 3;
+                this.connections = [];
+                // Store color for individual particle coloring
+                this.color = null;
+                
+            }
+
+            update(mouse, rotation) {
+                // Apply rotation
+                const cosY = Math.cos(rotation.y);
+                const sinY = Math.sin(rotation.y);
+                const cosX = Math.cos(rotation.x);
+                const sinX = Math.sin(rotation.x);
+                
+                let x = this.x;
+                let y = this.y;
+                let z = this.z;
+                
+                // Rotate around Y axis
+                let x1 = x * cosY - z * sinY;
+                let z1 = x * sinY + z * cosY;
+                
+                // Rotate around X axis
+                let y1 = y * cosX - z1 * sinX;
+                let z2 = y * sinX + z1 * cosX;
+                
+                this.projectedX = x1;
+                this.projectedY = y1;
+                this.projectedZ = z2;
+                
+                // Calculate screen position
+                const scale = 200 / (200 + z2);
+                this.screenX = canvas.width / 2 + this.projectedX * scale;
+                this.screenY = canvas.height / 2 + this.projectedY * scale;
+                this.screenSize = this.size * scale;
+                
+                // Mouse interaction
+                if (mouse.x && mouse.y) {
+                    const dx = this.screenX - mouse.x;
+                    const dy = this.screenY - mouse.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 100) {
+                        const force = (100 - distance) / 100;
+                        const angle = Math.atan2(dy, dx);
+                        
+                        this.vx += Math.cos(angle) * force * 0.5;
+                        this.vy += Math.sin(angle) * force * 0.5;
+                    }
+                }
+                
+                // Return to base position
+                const dx = this.baseX - this.x;
+                const dy = this.baseY - this.y;
+                const dz = this.baseZ - this.z;
+                
+                this.vx += dx * 0.01;
+                this.vy += dy * 0.01;
+                this.vz += dz * 0.01;
+                
+                // Apply velocity with damping
+                this.vx *= 0.95;
+                this.vy *= 0.95;
+                this.vz *= 0.95;
+                
+                this.x += this.vx;
+                this.y += this.vy;
+                this.z += this.vz;
+            }
+
+            draw(ctx, colorScheme, colorMode, customColors) {
+    // Determine particle color based on color mode
+    let particleColor;
+    
+    switch(colorMode) {
+        case 'single':
+            particleColor = customColors.particle;
+            break;
+        case 'gradient':
+            // Calculate gradient based on particle position
+            const t = (this.baseY + 150) / 300;
+            particleColor = this.interpolateColor(customColors.gradientStart, customColors.gradientEnd, t);
+            break;
+        case 'multi':
+            // Assign one of the multi-colors based on particle position
+            const colors = [
+                customColors.multiColor1,
+                customColors.multiColor2,
+                customColors.multiColor3,
+                customColors.multiColor4
+            ];
+            const colorIndex = Math.floor((this.baseX + 150) / 300 * colors.length) % colors.length;
+            particleColor = colors[colorIndex];
+            break;
+        case 'pattern':
+            // Create a striped pattern based on particle position
+            const patternSize = customColors.patternSize;
+            const stripe = Math.floor((this.baseX + 150) / patternSize) % 2;
+            particleColor = stripe === 0 ? customColors.patternBaseColor : customColors.patternColor;
+            break;
+        case 'scroll':
+            // Use the pre-calculated color from scroll mode
+            particleColor = this.color || '#00ffff';
+            break;
+        default:
+            particleColor = colorScheme.particle;
+    }
+    
+    // Store color for connection drawing
+    this.color = particleColor;
+    
+    // Draw particle
+    ctx.beginPath();
+    ctx.arc(this.screenX, this.screenY, this.screenSize, 0, Math.PI * 2);
+    ctx.fillStyle = particleColor;
+    ctx.fill();
+    
+    // Draw glow
+    const gradient = ctx.createRadialGradient(
+        this.screenX, this.screenY, 0,
+        this.screenX, this.screenY, this.screenSize * 3
+    );
+    gradient.addColorStop(0, particleColor);
+    gradient.addColorStop(1, 'transparent');
+    
+    ctx.beginPath();
+    ctx.arc(this.screenX, this.screenY, this.screenSize * 3, 0, Math.PI * 2);
+    ctx.fillStyle = gradient;
+    ctx.fill();
+}
+            
+            interpolateColor(color1, color2, factor) {
+                // Convert hex to RGB
+                const r1 = parseInt(color1.substring(1, 3), 16);
+                const g1 = parseInt(color1.substring(3, 5), 16);
+                const b1 = parseInt(color1.substring(5, 7), 16);
+                
+                const r2 = parseInt(color2.substring(1, 3), 16);
+                const g2 = parseInt(color2.substring(3, 5), 16);
+                const b2 = parseInt(color2.substring(5, 7), 16);
+                
+                // Interpolate
+                const r = Math.round(r1 + (r2 - r1) * factor);
+                const g = Math.round(g1 + (g2 - g1) * factor);
+                const b = Math.round(b1 + (b2 - b1) * factor);
+                
+                // Convert back to hex
+                return `#${this.componentToHex(r)}${this.componentToHex(g)}${this.componentToHex(b)}`;
+            }
+            
+            componentToHex(c) {
+                const hex = c.toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            }
+        }
+
+        // Animation controller
+        class ParticleSphere {
+            constructor() {
+                this.particles = [];
+                this.rotation = { x: 0, y: 0 };
+                this.mouse = { x: null, y: null };
+                this.colorScheme = {
+                    particle: '#00ffff',
+                    connection: 'rgba(255, 0, 128, 0.2)',
+                    background: 'rgba(15, 15, 31, 0.1)'
+                };
+                this.connectionDistance = 150;
+                this.particleCount = 200;
+                this.particleSize = 3;
+                this.rotationSpeed = 0.5;
+                this.isExploded = false;
+                this.colorMode = 'single';
+                this.customColors = {
+                    particle: '#00ffff',
+                    connection: '#ff0080',
+                    gradientStart: '#ff0080',
+                    gradientEnd: '#00ffff',
+                    multiColor1: '#ff0080',
+                    multiColor2: '#00ffff',
+                    multiColor3: '#ff9900',
+                    multiColor4: '#00ff99',
+                    patternBaseColor: '#00ffff',
+                    patternColor: '#ff0080',
+                    patternSize: 5
+                };
+                
+                this.init();
+                this.setupEventListeners();
+                this.colorMode = 'single';
+this.scrollSpeed = 0.5;
+this.colorTransition = 0.5;
+this.hueOffset = 0;
+this.scrollColors = true;
+            }
+
+            init() {
+                this.createParticles();
+            }
+
+            createParticles() {
+                this.particles = [];
+                
+                for (let i = 0; i < this.particleCount; i++) {
+                    // Spherical distribution
+                    const radius = 150;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos(2 * Math.random() - 1);
+                    
+                    const x = radius * Math.sin(phi) * Math.cos(theta);
+                    const y = radius * Math.sin(phi) * Math.sin(theta);
+                    const z = radius * Math.cos(phi);
+                    
+                    this.particles.push(new Particle(x, y, z));
+                }
+            }
+
+            update() {
+                // Update rotation
+                this.rotation.x += 0.005 * this.rotationSpeed;
+                this.rotation.y += 0.003 * this.rotationSpeed;
+                
+                // Update particles
+                this.particles.forEach(particle => {
+                    particle.update(this.mouse, this.rotation);
+                    particle.size = this.particleSize;
+                });
+                
+                // Find connections
+                this.particles.forEach(particle => {
+                    particle.connections = [];
+                    
+                    this.particles.forEach(other => {
+                        if (particle !== other) {
+                            const dx = particle.projectedX - other.projectedX;
+                            const dy = particle.projectedY - other.projectedY;
+                            const dz = particle.projectedZ - other.projectedZ;
+                            const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                            
+                            if (distance < this.connectionDistance) {
+                                particle.connections.push({
+                                    particle: other,
+                                    distance: distance
+                                });
+                            }
+                        }
+                    });
+                });
+            }
+
+           draw() {
+    // Clear canvas with fade effect
+    ctx.fillStyle = this.colorScheme.background;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Update color scrolling if enabled
+    if (this.colorMode === 'scroll') {
+        this.updateColorScrolling();
+    }
+    
+    // Draw connections first (behind particles)
+    this.particles.forEach(particle => {
+        particle.connections.forEach(connection => {
+            const alpha = 1 - (connection.distance / this.connectionDistance);
+            
+            // Determine connection color - use particle's color for consistency
+            let connectionColor = particle.color || this.colorScheme.connection;
+            
+            // Convert to rgba with alpha
+            if (connectionColor.startsWith('rgb')) {
+                connectionColor = connectionColor.replace(')', `, ${alpha * this.colorTransition})`).replace('rgb', 'rgba');
+            } else {
+                // Handle hex colors
+                const r = parseInt(connectionColor.substring(1, 3), 16);
+                const g = parseInt(connectionColor.substring(3, 5), 16);
+                const b = parseInt(connectionColor.substring(5, 7), 16);
+                connectionColor = `rgba(${r}, ${g}, ${b}, ${alpha * this.colorTransition})`;
+            }
+            
+            ctx.beginPath();
+            ctx.moveTo(particle.screenX, particle.screenY);
+            ctx.lineTo(connection.particle.screenX, connection.particle.screenY);
+            ctx.strokeStyle = connectionColor;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        });
+    });
+    
+    // Draw particles on top
+    this.particles.forEach(particle => {
+        particle.draw(ctx, this.colorScheme, this.colorMode, this.customColors);
+    });
+}
+
+            explode() {
+                this.isExploded = true;
+                this.particles.forEach(particle => {
+                    const force = 10 + Math.random() * 10;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos(2 * Math.random() - 1);
+                    
+                    particle.vx = force * Math.sin(phi) * Math.cos(theta);
+                    particle.vy = force * Math.sin(phi) * Math.sin(theta);
+                    particle.vz = force * Math.cos(phi);
+                });
+                
+                setTimeout(() => {
+                    this.isExploded = false;
+                }, 2000);
+            }
+
+            pulse() {
+                this.particles.forEach(particle => {
+                    const pulseForce = 5;
+                    const dx = particle.x - particle.baseX;
+                    const dy = particle.y - particle.baseY;
+                    const dz = particle.z - particle.baseZ;
+                    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    
+                    if (distance < 50) {
+                        const force = (50 - distance) / 50 * pulseForce;
+                        const angle = Math.atan2(dy, dx);
+                        const phi = Math.acos(dz / distance);
+                        
+                        particle.vx += Math.sin(phi) * Math.cos(angle) * force;
+                        particle.vy += Math.sin(phi) * Math.sin(angle) * force;
+                        particle.vz += Math.cos(phi) * force;
+                    }
+                });
+            }
+
+            updateColorScrolling() {
+    if (this.colorMode === 'scroll') {
+        this.hueOffset += this.scrollSpeed * 0.01;
+        if (this.hueOffset > 1) this.hueOffset = 0;
+        
+        // Update all particles with new colors
+        this.particles.forEach((particle, index) => {
+            const hue = (this.hueOffset + index * 0.01) % 1;
+            particle.color = this.HSLToRGB(hue, 1, 0.5);
+        });
+    }
+}
+
+// Helper function to convert HSL to RGB
+HSLToRGB(h, s, l) {
+    let r, g, b;
+    
+    if (s === 0) {
+        r = g = b = l; // achromatic
+    } else {
+        const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        };
+        
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+    
+    return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
+}
+
+            setupEventListeners() {
+                // Mouse move
+                canvas.addEventListener('mousemove', (e) => {
+                    const rect = canvas.getBoundingClientRect();
+                    this.mouse.x = e.clientX - rect.left;
+                    this.mouse.y = e.clientY - rect.top;
+                });
+                
+                canvas.addEventListener('mouseleave', () => {
+                    this.mouse.x = null;
+                    this.mouse.y = null;
+                });
+                
+                // Control inputs
+                document.getElementById('particleCount').addEventListener('input', (e) => {
+                    this.particleCount = parseInt(e.target.value);
+                    this.createParticles();
+                });
+                
+                document.getElementById('connectionDistance').addEventListener('input', (e) => {
+                    this.connectionDistance = parseInt(e.target.value);
+                });
+                
+                document.getElementById('rotationSpeed').addEventListener('input', (e) => {
+                    this.rotationSpeed = parseFloat(e.target.value);
+                });
+                
+                document.getElementById('particleSize').addEventListener('input', (e) => {
+                    this.particleSize = parseInt(e.target.value);
+                });
+                
+                // Color schemes
+                document.querySelectorAll('.color-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        document.querySelectorAll('.color-option').forEach(opt => {
+                            opt.classList.remove('active');
+                        });
+                        e.target.classList.add('active');
+                        
+                        const scheme = e.target.getAttribute('data-scheme');
+                        this.setColorScheme(scheme);
+                    });
+                });
+                
+                // Buttons
+                document.getElementById('resetBtn').addEventListener('click', () => {
+                    this.createParticles();
+                });
+                
+                document.getElementById('pulseBtn').addEventListener('click', () => {
+                    this.pulse();
+                });
+                
+                document.getElementById('explodeBtn').addEventListener('click', () => {
+                    this.explode();
+                });
+                
+                // Color mode selection
+                document.querySelectorAll('.color-mode-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.color-mode-btn').forEach(b => {
+                            b.classList.remove('active');
+                        });
+                        e.target.classList.add('active');
+                        
+                        this.colorMode = e.target.getAttribute('data-mode');
+                        this.showColorControls(this.colorMode);
+                    });
+                });
+                
+                // Color pickers
+                document.getElementById('particleColor').addEventListener('input', (e) => {
+                    this.customColors.particle = e.target.value;
+                });
+                
+                document.getElementById('connectionColor').addEventListener('input', (e) => {
+                    this.customColors.connection = e.target.value;
+                });
+                
+                document.getElementById('gradientStart').addEventListener('input', (e) => {
+                    this.customColors.gradientStart = e.target.value;
+                });
+                
+                document.getElementById('gradientEnd').addEventListener('input', (e) => {
+                    this.customColors.gradientEnd = e.target.value;
+                });
+                
+                document.getElementById('gradientAngle').addEventListener('input', (e) => {
+                    document.getElementById('angleValue').textContent = `${e.target.value}°`;
+                    // Note: Gradient angle is stored but not currently used in the gradient calculation
+                });
+                
+                document.getElementById('multiColor1').addEventListener('input', (e) => {
+                    this.customColors.multiColor1 = e.target.value;
+                });
+                
+                document.getElementById('multiColor2').addEventListener('input', (e) => {
+                    this.customColors.multiColor2 = e.target.value;
+                });
+                
+                document.getElementById('multiColor3').addEventListener('input', (e) => {
+                    this.customColors.multiColor3 = e.target.value;
+                });
+                
+                document.getElementById('multiColor4').addEventListener('input', (e) => {
+                    this.customColors.multiColor4 = e.target.value;
+                });
+                
+                document.getElementById('patternBaseColor').addEventListener('input', (e) => {
+                    this.customColors.patternBaseColor = e.target.value;
+                });
+                
+                document.getElementById('patternColor').addEventListener('input', (e) => {
+                    this.customColors.patternColor = e.target.value;
+                });
+                
+                document.getElementById('patternSize').addEventListener('input', (e) => {
+                    this.customColors.patternSize = parseInt(e.target.value);
+                });
+
+                // Scroll color button
+document.getElementById('scrollColorBtn').addEventListener('click', () => {
+    this.colorMode = 'scroll';
+    // Update UI to show scroll mode is active
+    document.querySelectorAll('.color-mode-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-mode') === 'scroll') {
+            btn.classList.add('active');
+        }
+    });
+    this.showColorControls('scroll');
+});
+
+// Scroll controls
+document.getElementById('scrollSpeed').addEventListener('input', (e) => {
+    this.scrollSpeed = parseFloat(e.target.value);
+});
+
+document.getElementById('colorTransition').addEventListener('input', (e) => {
+    this.colorTransition = parseFloat(e.target.value);
+});
+            }
+
+            showColorControls(mode) {
+    // Hide all color controls
+    document.getElementById('singleColorControls').style.display = 'none';
+    document.getElementById('gradientColorControls').style.display = 'none';
+    document.getElementById('multiColorControls').style.display = 'none';
+    document.getElementById('patternColorControls').style.display = 'none';
+    document.getElementById('scrollColorControls').style.display = 'none';
+    
+    // Show the selected controls
+    document.getElementById(`${mode}ColorControls`).style.display = 'flex';
+}
+
+            setColorScheme(scheme) {
+                switch(scheme) {
+                    case 'cyan-magenta':
+                        this.colorScheme = {
+                            particle: '#00ffff',
+                            connection: 'rgba(255, 0, 128, 0.2)',
+                            background: 'rgba(15, 15, 31, 0.1)'
+                        };
+                        break;
+                    case 'orange-green':
+                        this.colorScheme = {
+                            particle: '#ff9900',
+                            connection: 'rgba(0, 255, 153, 0.2)',
+                            background: 'rgba(15, 15, 31, 0.1)'
+                        };
+                        break;
+                    case 'purple-yellow':
+                        this.colorScheme = {
+                            particle: '#9900ff',
+                            connection: 'rgba(255, 204, 0, 0.2)',
+                            background: 'rgba(15, 15, 31, 0.1)'
+                        };
+                        break;
+                    case 'white-blue':
+                        this.colorScheme = {
+                            particle: '#ffffff',
+                            connection: 'rgba(102, 102, 255, 0.2)',
+                            background: 'rgba(15, 15, 31, 0.1)'
+                        };
+                        break;
+                }
+            }
+        }
+
+        // Initialize and animate
+        const particleSphere = new ParticleSphere();
+
+        function animate() {
+            particleSphere.update();
+            particleSphere.draw();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

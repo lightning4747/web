@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand-Controlled Particle Animation</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+        
+        #particleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        #webcamVideo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            height: 225px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+            transform: scaleX(-1); /* Mirror the video */
+            object-fit: cover;
+        }
+        
+        #webcamCanvas {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            height: 225px;
+            border-radius: 12px;
+            z-index: 3;
+            transform: scaleX(-1);
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            z-index: 2;
+            max-width: 300px;
+        }
+        
+        .controls h3 {
+            margin-bottom: 10px;
+            color: #6ee7b7;
+        }
+        
+        .control-group {
+            margin-bottom: 10px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+        }
+        
+        select, button {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        button {
+            background: #6ee7b7;
+            color: #0f0c29;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #5ad1a3;
+            transform: translateY(-2px);
+        }
+        
+        .gesture-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            z-index: 2;
+            max-width: 300px;
+        }
+        
+        .gesture-info h3 {
+            margin-bottom: 10px;
+            color: #fbbf24;
+        }
+        
+        .gesture-list {
+            list-style-type: none;
+        }
+        
+        .gesture-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .gesture-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #6ee7b7;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .status {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #d1d5db;
+            text-align: center;
+            max-width: 80%;
+        }
+        
+        .title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .title h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #6ee7b7, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .title p {
+            font-size: 0.9rem;
+            color: #d1d5db;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .debug-info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            z-index: 2;
+        }
+        
+        .fallback-controls {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            z-index: 5;
+            backdrop-filter: blur(10px);
+        }
+        
+        .fallback-controls h3 {
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+        
+        .mouse-control-info {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>Hand-Controlled Particle Animation</h1>
+        <p>Move your hands to control the particles</p>
+    </div>
+    
+    <div class="container">
+        <canvas id="particleCanvas"></canvas>
+        <video id="webcamVideo" autoplay playsinline></video>
+        <canvas id="webcamCanvas"></canvas>
+        
+        <div class="gesture-info">
+            <h3>Gesture Controls</h3>
+            <ul class="gesture-list">
+                <li><div class="gesture-icon">👆</div> Index Finger: Attract Particles</li>
+                <li><div class="gesture-icon">✋</div> Open Palm: Create Explosion</li>
+                <li><div class="gesture-icon">👊</div> Fist: Repel Particles</li>
+                <li><div class="gesture-icon">🤏</div> Pinch: Create Vortex</li>
+                <li><div class="gesture-icon">👋</div> Wave: Add Particles</li>
+            </ul>
+        </div>
+        
+        <div class="controls">
+            <h3>Particle Controls</h3>
+            <div class="control-group">
+                <label for="particleCount">Particle Count: <span id="countValue">500</span></label>
+                <input type="range" id="particleCount" min="50" max="2000" value="500">
+            </div>
+            <div class="control-group">
+                <label for="particleSize">Particle Size: <span id="sizeValue">3</span></label>
+                <input type="range" id="particleSize" min="1" max="10" value="3">
+            </div>
+            <div class="control-group">
+                <label for="particleSpeed">Particle Speed: <span id="speedValue">1</span></label>
+                <input type="range" id="particleSpeed" min="0.1" max="3" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <label for="colorScheme">Color Scheme:</label>
+                <select id="colorScheme">
+                    <option value="rainbow">Rainbow</option>
+                    <option value="fire">Fire</option>
+                    <option value="ice">Ice</option>
+                    <option value="neon">Neon</option>
+                </select>
+            </div>
+            <button id="toggleHandTracking">Enable Hand Tracking</button>
+            <button id="useMouseControl">Use Mouse Control Instead</button>
+        </div>
+        
+        <div class="debug-info">
+            <div>Hands Detected: <span id="handCount">0</span></div>
+            <div>Current Gesture: <span id="currentGesture">None</span></div>
+            <div>FPS: <span id="fpsCounter">0</span></div>
+        </div>
+    </div>
+    
+    <div id="fallbackControls" class="fallback-controls hidden">
+        <h3>Mouse Control Mode</h3>
+        <p>Click and drag to interact with particles</p>
+        <div class="mouse-control-info">
+            <p>Left Click: Attract Particles</p>
+            <p>Right Click: Repel Particles</p>
+            <p>Middle Click: Create Vortex</p>
+        </div>
+        <button id="backToHandControl">Try Hand Control Again</button>
+    </div>
+    
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Loading Hand Detection Model...</p>
+        <p class="status" id="status">Initializing...</p>
+        <button id="skipHandTracking" style="margin-top: 20px;">Skip Hand Tracking</button>
+    </div>
+
+    <script>
+        // Main application variables
+        let canvas, ctx;
+        let video, webcamCanvas, webcamCtx;
+        let particles = [];
+        let handDetector;
+        let lastHands = [];
+        let animationId;
+        let particleCount = 500;
+        let particleSize = 3;
+        let particleSpeed = 1;
+        let colorScheme = 'rainbow';
+        let handTrackingEnabled = false;
+        let mouseControlEnabled = false;
+        let lastFrameTime = 0;
+        let fps = 0;
+        
+        // Color palettes
+        const colorSchemes = {
+            rainbow: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE'],
+            fire: ['#FF0000', '#FF4500', '#FF8C00', '#FFD700', '#FFFF00'],
+            ice: ['#00BFFF', '#1E90FF', '#87CEFA', '#B0E0E6', '#E0FFFF'],
+            neon: ['#FF00FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF00FF']
+        };
+        
+        // Initialize the application
+        async function init() {
+            // Set up canvas
+            canvas = document.getElementById('particleCanvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            
+            // Set up webcam canvas
+            webcamCanvas = document.getElementById('webcamCanvas');
+            webcamCtx = webcamCanvas.getContext('2d');
+            webcamCanvas.width = 300;
+            webcamCanvas.height = 225;
+            
+            // Set up video
+            video = document.getElementById('webcamVideo');
+            
+            // Set up controls
+            setupControls();
+            
+            // Initialize particles
+            createParticles();
+            
+            // Start animation
+            animate();
+            
+            // Try to initialize hand detection, but don't block the UI
+            initHandDetection().catch(error => {
+                console.error('Hand detection failed:', error);
+                document.getElementById('status').textContent = 'Hand detection unavailable. Using mouse controls.';
+                setTimeout(() => {
+                    enableMouseControl();
+                }, 2000);
+            });
+        }
+        
+        // Set up control event listeners
+        function setupControls() {
+            const countSlider = document.getElementById('particleCount');
+            const sizeSlider = document.getElementById('particleSize');
+            const speedSlider = document.getElementById('particleSpeed');
+            const colorSelect = document.getElementById('colorScheme');
+            const toggleHandTracking = document.getElementById('toggleHandTracking');
+            const useMouseControl = document.getElementById('useMouseControl');
+            const skipHandTracking = document.getElementById('skipHandTracking');
+            const backToHandControl = document.getElementById('backToHandControl');
+            
+            countSlider.addEventListener('input', function() {
+                particleCount = parseInt(this.value);
+                document.getElementById('countValue').textContent = particleCount;
+                createParticles();
+            });
+            
+            sizeSlider.addEventListener('input', function() {
+                particleSize = parseInt(this.value);
+                document.getElementById('sizeValue').textContent = particleSize;
+            });
+            
+            speedSlider.addEventListener('input', function() {
+                particleSpeed = parseFloat(this.value);
+                document.getElementById('speedValue').textContent = particleSpeed;
+            });
+            
+            colorSelect.addEventListener('change', function() {
+                colorScheme = this.value;
+            });
+            
+            toggleHandTracking.addEventListener('click', function() {
+                if (handTrackingEnabled) {
+                    disableHandTracking();
+                    this.textContent = 'Enable Hand Tracking';
+                } else {
+                    initHandDetection().then(() => {
+                        this.textContent = 'Disable Hand Tracking';
+                    }).catch(error => {
+                        console.error('Failed to enable hand tracking:', error);
+                        document.getElementById('status').textContent = 'Failed to enable hand tracking';
+                    });
+                }
+            });
+            
+            useMouseControl.addEventListener('click', enableMouseControl);
+            skipHandTracking.addEventListener('click', enableMouseControl);
+            backToHandControl.addEventListener('click', function() {
+                document.getElementById('fallbackControls').classList.add('hidden');
+                mouseControlEnabled = false;
+                initHandDetection().catch(error => {
+                    console.error('Hand detection still not working:', error);
+                    enableMouseControl();
+                });
+            });
+        }
+        
+        // Resize canvas to fit window
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        // Create particles
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    size: Math.random() * 3 + 1,
+                    color: colorSchemes[colorScheme][Math.floor(Math.random() * colorSchemes[colorScheme].length)],
+                    life: Math.random() * 100
+                });
+            }
+        }
+        
+        // Initialize hand detection
+        async function initHandDetection() {
+            try {
+                document.getElementById('status').textContent = 'Loading hand detection model...';
+                
+                // Set TensorFlow.js backend to WebGL for better performance
+                await tf.setBackend('webgl');
+                await tf.ready();
+                
+                document.getElementById('status').textContent = 'TensorFlow.js ready. Loading hand pose detection...';
+                
+                // Create hand detector using MediaPipe Hands
+                handDetector = await handPoseDetection.createDetector(
+                    handPoseDetection.SupportedModels.MediaPipeHands,
+                    {
+                        runtime: 'mediapipe',
+                        modelType: 'full',
+                        maxHands: 2,
+                        solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands/'
+                    }
+                );
+                
+                document.getElementById('status').textContent = 'Hand detection model loaded. Starting webcam...';
+                
+                // Start webcam
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 }, 
+                        height: { ideal: 480 },
+                        frameRate: { ideal: 30 }
+                    } 
+                });
+                
+                video.srcObject = stream;
+                
+                // Wait for video to be ready
+                await new Promise((resolve) => {
+                    video.onloadedmetadata = () => {
+                        resolve();
+                    };
+                });
+                
+                video.play();
+                
+                document.getElementById('status').textContent = 'Webcam started. Detecting hands...';
+                
+                // Hide loading screen after a short delay
+                setTimeout(() => {
+                    document.getElementById('loading').classList.add('hidden');
+                }, 1000);
+                
+                handTrackingEnabled = true;
+                
+                // Start hand detection loop
+                detectHands();
+                
+                return true;
+            } catch (error) {
+                console.error('Error initializing hand detection:', error);
+                document.getElementById('status').textContent = `Error: ${error.message}`;
+                handTrackingEnabled = false;
+                throw error;
+            }
+        }
+        
+        // Detect hands in video stream
+        async function detectHands() {
+            if (!handDetector || !handTrackingEnabled) return;
+            
+            try {
+                // Estimate hands in the current video frame
+                const hands = await handDetector.estimateHands(video, {
+                    flipHorizontal: false
+                });
+                
+                lastHands = hands || [];
+                
+                // Update hand count display
+                document.getElementById('handCount').textContent = lastHands.length;
+                
+                // Draw hand landmarks on webcam canvas
+                drawHandLandmarksOnWebcam();
+                
+            } catch (error) {
+                console.error('Error detecting hands:', error);
+            }
+            
+            // Continue detection
+            if (handTrackingEnabled) {
+                requestAnimationFrame(detectHands);
+            }
+        }
+        
+        // Draw hand landmarks on the webcam canvas
+        function drawHandLandmarksOnWebcam() {
+            webcamCtx.clearRect(0, 0, webcamCanvas.width, webcamCanvas.height);
+            
+            lastHands.forEach(hand => {
+                const landmarks = hand.keypoints;
+                
+                // Draw connections
+                webcamCtx.strokeStyle = '#6ee7b7';
+                webcamCtx.lineWidth = 2;
+                
+                // Draw landmarks
+                landmarks.forEach(landmark => {
+                    const x = (landmark.x / video.videoWidth) * webcamCanvas.width;
+                    const y = (landmark.y / video.videoHeight) * webcamCanvas.height;
+                    
+                    webcamCtx.beginPath();
+                    webcamCtx.arc(x, y, 3, 0, Math.PI * 2);
+                    webcamCtx.fillStyle = '#6ee7b7';
+                    webcamCtx.fill();
+                });
+            });
+        }
+        
+        // Disable hand tracking
+        function disableHandTracking() {
+            handTrackingEnabled = false;
+            lastHands = [];
+            document.getElementById('handCount').textContent = '0';
+            document.getElementById('currentGesture').textContent = 'None';
+            
+            // Clear webcam canvas
+            webcamCtx.clearRect(0, 0, webcamCanvas.width, webcamCanvas.height);
+        }
+        
+        // Enable mouse control as fallback
+        function enableMouseControl() {
+            handTrackingEnabled = false;
+            mouseControlEnabled = true;
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('fallbackControls').classList.remove('hidden');
+            
+            // Set up mouse event listeners
+            setupMouseControls();
+        }
+        
+        // Set up mouse controls for fallback
+        function setupMouseControls() {
+            let mouseX = 0;
+            let mouseY = 0;
+            let mouseDown = false;
+            let mouseButton = 0; // 0: left, 1: middle, 2: right
+            
+            canvas.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+            
+            canvas.addEventListener('mousedown', (e) => {
+                mouseDown = true;
+                mouseButton = e.button;
+            });
+            
+            canvas.addEventListener('mouseup', () => {
+                mouseDown = false;
+            });
+            
+            canvas.addEventListener('mouseleave', () => {
+                mouseDown = false;
+            });
+            
+            // Store mouse state for use in animation loop
+            window.mouseState = {
+                x: mouseX,
+                y: mouseY,
+                down: mouseDown,
+                button: mouseButton
+            };
+        }
+        
+        // Main animation loop
+        function animate() {
+            const currentTime = performance.now();
+            const deltaTime = currentTime - lastFrameTime;
+            
+            // Calculate FPS
+            if (deltaTime > 0) {
+                fps = Math.round(1000 / deltaTime);
+            }
+            lastFrameTime = currentTime;
+            
+            document.getElementById('fpsCounter').textContent = fps;
+            
+            // Clear canvas with a semi-transparent background for trail effect
+            ctx.fillStyle = 'rgba(15, 12, 41, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw particles
+            updateParticles();
+            drawParticles();
+            
+            // Continue animation
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        // Update particle positions and behaviors
+        function updateParticles() {
+            // If hand tracking is enabled, use hand gestures
+            if (handTrackingEnabled && lastHands.length > 0) {
+                processHandGestures();
+            }
+            // If mouse control is enabled, use mouse
+            else if (mouseControlEnabled && window.mouseState && window.mouseState.down) {
+                processMouseInteraction();
+            }
+            
+            // Update particle positions
+            particles.forEach(particle => {
+                // Apply basic movement
+                particle.x += particle.vx * particleSpeed;
+                particle.y += particle.vy * particleSpeed;
+                
+                // Bounce off walls
+                if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+                if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+                
+                // Add some random movement
+                particle.vx += (Math.random() - 0.5) * 0.1;
+                particle.vy += (Math.random() - 0.5) * 0.1;
+                
+                // Limit velocity
+                const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
+                if (speed > 3) {
+                    particle.vx = (particle.vx / speed) * 3;
+                    particle.vy = (particle.vy / speed) * 3;
+                }
+                
+                // Apply friction
+                particle.vx *= 0.99;
+                particle.vy *= 0.99;
+                
+                // Update particle life
+                particle.life += 0.1;
+                if (particle.life > 100) particle.life = 0;
+            });
+        }
+        
+        // Process hand gestures and apply effects
+        function processHandGestures() {
+            lastHands.forEach(hand => {
+                const landmarks = hand.keypoints;
+                
+                // Get index finger tip position
+                const indexTip = landmarks[8]; // Index finger tip
+                if (!indexTip) return;
+                
+                // Convert hand position to canvas coordinates
+                const handX = (indexTip.x / video.videoWidth) * canvas.width;
+                const handY = (indexTip.y / video.videoHeight) * canvas.height;
+                
+                // Determine gesture based on hand landmarks
+                const gesture = detectGesture(landmarks);
+                document.getElementById('currentGesture').textContent = gesture;
+                
+                // Apply effect based on gesture
+                applyGestureEffect(handX, handY, gesture);
+            });
+        }
+        
+        // Process mouse interaction
+        function processMouseInteraction() {
+            const mouseX = window.mouseState.x;
+            const mouseY = window.mouseState.y;
+            const button = window.mouseState.button;
+            
+            let gesture = 'point'; // Default to point gesture
+            
+            // Map mouse buttons to gestures
+            if (button === 0) gesture = 'point';      // Left click - attract
+            else if (button === 1) gesture = 'pinch'; // Middle click - vortex
+            else if (button === 2) gesture = 'fist';  // Right click - repel
+            
+            document.getElementById('currentGesture').textContent = gesture;
+            applyGestureEffect(mouseX, mouseY, gesture);
+        }
+        
+        // Detect hand gesture from landmarks
+        function detectGesture(landmarks) {
+            // Get key points
+            const wrist = landmarks[0];
+            const thumbTip = landmarks[4];
+            const indexTip = landmarks[8];
+            const middleTip = landmarks[12];
+            const ringTip = landmarks[16];
+            const pinkyTip = landmarks[20];
+            
+            // Calculate distances between fingertips and wrist
+            const thumbDist = distance(thumbTip, wrist);
+            const indexDist = distance(indexTip, wrist);
+            const middleDist = distance(middleTip, wrist);
+            const ringDist = distance(ringTip, wrist);
+            const pinkyDist = distance(pinkyTip, wrist);
+            
+            // Calculate average distance
+            const avgDist = (thumbDist + indexDist + middleDist + ringDist + pinkyDist) / 5;
+            
+            // Check for open palm (all fingers extended)
+            if (indexDist > avgDist * 0.8 && 
+                middleDist > avgDist * 0.8 && 
+                ringDist > avgDist * 0.8 && 
+                pinkyDist > avgDist * 0.8) {
+                return 'open';
+            }
+            
+            // Check for fist (all fingers close to wrist)
+            if (indexDist < avgDist * 0.5 && 
+                middleDist < avgDist * 0.5 && 
+                ringDist < avgDist * 0.5 && 
+                pinkyDist < avgDist * 0.5) {
+                return 'fist';
+            }
+            
+            // Check for pinch (thumb and index close together)
+            const thumbIndexDist = distance(thumbTip, indexTip);
+            if (thumbIndexDist < avgDist * 0.3) {
+                return 'pinch';
+            }
+            
+            // Check for pointing (only index finger extended)
+            if (indexDist > avgDist * 0.8 && 
+                middleDist < avgDist * 0.6 && 
+                ringDist < avgDist * 0.6 && 
+                pinkyDist < avgDist * 0.6) {
+                return 'point';
+            }
+            
+            // Default to wave
+            return 'wave';
+        }
+        
+        // Apply effect based on gesture
+        function applyGestureEffect(handX, handY, gesture) {
+            particles.forEach(particle => {
+                const dx = handX - particle.x;
+                const dy = handY - particle.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                switch (gesture) {
+                    case 'point':
+                        // Attract particles to index finger
+                        if (dist < 200) {
+                            const force = 0.1;
+                            particle.vx += (dx / dist) * force;
+                            particle.vy += (dy / dist) * force;
+                        }
+                        break;
+                        
+                    case 'open':
+                        // Create explosion effect
+                        if (dist < 150) {
+                            const force = 0.3;
+                            particle.vx -= (dx / dist) * force;
+                            particle.vy -= (dy / dist) * force;
+                        }
+                        break;
+                        
+                    case 'fist':
+                        // Repel particles
+                        if (dist < 150) {
+                            const force = 0.2;
+                            particle.vx -= (dx / dist) * force;
+                            particle.vy -= (dy / dist) * force;
+                        }
+                        break;
+                        
+                    case 'pinch':
+                        // Create vortex effect
+                        if (dist < 180) {
+                            const force = 0.05;
+                            // Rotational force
+                            particle.vx += (-dy / dist) * force;
+                            particle.vy += (dx / dist) * force;
+                            // Attraction force
+                            particle.vx += (dx / dist) * force * 0.5;
+                            particle.vy += (dy / dist) * force * 0.5;
+                        }
+                        break;
+                        
+                    case 'wave':
+                        // Add new particles when waving
+                        if (Math.random() < 0.02 && particles.length < particleCount * 1.5) {
+                            particles.push({
+                                x: handX,
+                                y: handY,
+                                vx: (Math.random() - 0.5) * 4,
+                                vy: (Math.random() - 0.5) * 4,
+                                size: Math.random() * 3 + 1,
+                                color: colorSchemes[colorScheme][Math.floor(Math.random() * colorSchemes[colorScheme].length)],
+                                life: 0
+                            });
+                        }
+                        break;
+                }
+            });
+        }
+        
+        // Draw particles on canvas
+        function drawParticles() {
+            particles.forEach(particle => {
+                // Calculate alpha based on particle life for pulsing effect
+                const alpha = 0.5 + 0.5 * Math.sin(particle.life * 0.1);
+                
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particleSize, 0, Math.PI * 2);
+                ctx.fillStyle = particle.color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+                ctx.fill();
+                
+                // Add glow effect for some particles
+                if (Math.random() < 0.3) {
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particleSize * 2, 0, Math.PI * 2);
+                    ctx.fillStyle = particle.color.replace(')', `, 0.2)`).replace('rgb', 'rgba');
+                    ctx.fill();
+                }
+            });
+        }
+        
+        // Helper function to calculate distance between two points
+        function distance(point1, point2) {
+            const dx = point1.x - point2.x;
+            const dy = point1.y - point2.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            resizeCanvas();
+            createParticles();
+        });
+        
+        // Start the application when the page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
